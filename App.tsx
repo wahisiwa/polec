@@ -78,6 +78,16 @@ const App: React.FC = () => {
 
   const isFinished = state.currentIndex >= state.questions.length && state.currentMode !== QuizMode.IDLE && state.currentMode !== QuizMode.LIST;
   const currentQuestion = state.questions[state.currentIndex];
+  const totalQuestions = state.questions.length || INITIAL_QUESTIONS.length;
+  const completedCount = state.history.length;
+  const modeLabel =
+    state.currentMode === QuizMode.ALL
+      ? '全問復習'
+      : state.currentMode === QuizMode.RANDOM10
+      ? 'ランダム10問'
+      : state.currentMode === QuizMode.LIST
+      ? '問題一覧'
+      : '';
 
   const correctCount = state.history.filter(h => h.isCorrect).length;
   const accuracyRate = state.history.length > 0 ? Math.round((correctCount / state.history.length) * 100) : 0;
@@ -176,7 +186,7 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <span className="block text-lg font-bold text-slate-700">問題一覧</span>
-                    <span className="text-xs font-medium opacity-70">全61問の設問と答えをチェック</span>
+                    <span className="text-xs font-medium opacity-70">全 {INITIAL_QUESTIONS.length} 問の設問と答えをチェック</span>
                   </div>
                 </div>
                 <i className="fas fa-chevron-right opacity-20"></i>
@@ -213,13 +223,21 @@ const App: React.FC = () => {
           <div key={state.currentIndex} className="flex-1 flex flex-col space-y-4 max-h-[85vh] animate-in fade-in duration-300">
             <div className="bg-white p-5 sm:p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 flex-1 flex flex-col relative overflow-hidden">
               <div className="flex flex-col gap-3 mb-6">
-                <div className="flex justify-between items-end">
-                  {renderCategoryBadge(currentQuestion.category)}
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {renderCategoryBadge(currentQuestion.category)}
+                    <span className="text-xs font-bold text-slate-500 tracking-tight">
+                      {modeLabel}
+                    </span>
+                  </div>
                   <span className="text-[10px] font-black text-slate-300 tracking-tighter uppercase">
-                    Question {state.currentIndex + 1} / {state.questions.length}
+                    {state.currentIndex + 1} / {totalQuestions} 問
                   </span>
                 </div>
-                <ProgressBar current={state.currentIndex + 1} total={state.questions.length} />
+                <ProgressBar current={state.currentIndex + 1} total={totalQuestions} />
+                <div className="text-[11px] text-slate-400 sm:text-sm">
+                  残り {Math.max(totalQuestions - (state.currentIndex + 1), 0)} 問 ・ 正答率 {accuracyRate}%
+                </div>
               </div>
 
               <div className="flex-1 flex flex-col justify-center py-4">
@@ -280,6 +298,9 @@ const App: React.FC = () => {
             </div>
             
             <h2 className="text-2xl font-black text-slate-900 mb-1">結果</h2>
+            <div className="mb-6 text-sm text-slate-500">
+              出題数 {totalQuestions} 問で、{completedCount} 問回答しました。
+            </div>
             <div className="mb-8">
                <span className="text-7xl font-black text-indigo-600 tracking-tighter">{accuracyRate}</span>
                <span className="text-2xl font-black text-indigo-400 ml-1">%</span>

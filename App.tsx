@@ -331,7 +331,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="mt-8 text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-        © 2024 POLEC STUDY SYSTEM
+        © 2026 POLEC STUDY SYSTEM
       </footer>
     </div>
   );
